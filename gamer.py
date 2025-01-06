@@ -47,7 +47,7 @@ while not keyboard.is_pressed('esc'):
             time.sleep(1)
 
             pyautogui.moveTo(cookie)
-            pyautogui.click(cookie, clicks=50, interval=.09)
+            pyautogui.click(cookie, clicks=80, interval=.09)
             print(f"I clicked on the cookie {cookie}")
             time.sleep(1)
             pyautogui.click(golden_cookie)
