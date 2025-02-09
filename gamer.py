@@ -7,7 +7,7 @@ pyautogui.FAILSAFE = True
 
 pyautogui.useImageNotFoundException(False)
 
-pyautogui.countdown(5)
+pyautogui.countdown(10)
 
 
 while not keyboard.is_pressed('esc'):
@@ -23,19 +23,25 @@ while not keyboard.is_pressed('esc'):
     mine = pyautogui.locateOnScreen(
         'mine.png', grayscale=False, confidence=.80)
     factory = pyautogui.locateOnScreen(
-        'factory.png', grayscale=False, confidence=.80)
+        'factory.png', grayscale=False, confidence=.85)
     bank = pyautogui.locateOnScreen(
-        'bank.png', grayscale=False, confidence=.80)
+        'bank.png', grayscale=False, confidence=.85)
     x_close = pyautogui.locateOnScreen(
-        'x_close.png', grayscale=False, confidence=.80)
+        'x_close.png', grayscale=False, confidence=.85)
     temple = pyautogui.locateOnScreen(
-        'temple.png', grayscale=False, confidence=.80)
+        'temple.png', grayscale=False, confidence=.85)
     golden_cookie = pyautogui.locateOnScreen(
-        'golden_cookie.png', grayscale=False, confidence=.80)
+        'golden_cookie.png', grayscale=False, confidence=.90)
+    tower = pyautogui.locateOnScreen(
+        'tower.png', grayscale=False, confidence=.85)
+    shipment = pyautogui.locateOnScreen(
+        'shipment.png', grayscale=True, confidence=.85)
+    alchemy = pyautogui.locateOnScreen(
+        'alchemy.png', grayscale=True, confidence=.85)
 
-    pics = [cookie, bank, grandma, mine, farm,
-            factory, cursor, x_close, temple, golden_cookie]
-    num_clicks = random.randint(1, 10)
+    pics = [bank, grandma, mine, farm,
+            factory, cursor, tower, x_close, temple, shipment, alchemy]
+
     # if pyautogui.locateOnScreen('cookie.PNG', grayscale=True, confidence=.80) != None:
     try:
 
@@ -47,10 +53,10 @@ while not keyboard.is_pressed('esc'):
             time.sleep(1)
 
             pyautogui.moveTo(cookie)
-            pyautogui.click(cookie, clicks=80, interval=.09)
-            print(f"I clicked on the cookie {cookie}")
+            pyautogui.click(cookie, clicks=160, interval=.075)
+            print(f"I clicked the cookie {cookie}")
             time.sleep(1)
-            pyautogui.click(golden_cookie)
+            # pyautogui.click(golden_cookie)
         tile_click()
     except:
         print('I cannot find you!')
