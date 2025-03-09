@@ -38,11 +38,13 @@ while not keyboard.is_pressed('esc'):
         'alchemy.png', grayscale=True, confidence=.80)
     portal = pyautogui.locateOnScreen(
         'portal.png', grayscale=True, confidence=.80)
+    time_machine = pyautogui.locateOnScreen(
+        'time_machine.png', grayscale=True, confidence=.80)
     goldens = ['golden_cookie.png', 'golden_cookie1.png',
                'golden_cookie2.png', 'golden_cookie3.png', 'golden_cookie4.png']
 
     pics = [cookie, bank, grandma, mine, farm,
-            factory, cursor, tower, x_close, temple, shipment, alchemy, portal]
+            factory, cursor, tower, x_close, temple, shipment, alchemy, portal, time_machine]
 
     # if pyautogui.locateOnScreen('cookie.PNG', grayscale=True, confidence=.80) != None:
     try:
