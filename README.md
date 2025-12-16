@@ -21,8 +21,10 @@ This bot uses image recognition to identify and interact with Cookie Clicker gam
   - Shipment
   - Alchemy Lab
   - Portal
-- **Golden Cookie Detection**: Framework in place for detecting and clicking golden cookies (currently commented out)
+  - Time Machine
+- **Golden Cookie Detection**: Actively detects and clicks golden cookies with 50% confidence threshold
 - **Safe Exit**: Press ESC to stop the bot at any time
+- **Error Handling**: Gracefully handles missing images and unexpected errors
 
 ## Requirements
 
@@ -52,20 +54,25 @@ pip install pyautogui keyboard
 
 The script operates in a continuous loop:
 1. Scans the screen for building/upgrade images using template matching
-2. Randomly selects and clicks on an available building to purchase
-3. Rapidly clicks the cookie 140 times with 0.075 second intervals
-4. Repeats until ESC is pressed
+2. Randomly shuffles and clicks on an available building to purchase
+3. Actively searches for golden cookies and clicks them when detected
+4. If no golden cookie is found, rapidly clicks the main cookie 140 times with 0.075 second intervals
+5. Repeats until ESC is pressed
+
 
 ## Notes
 
-- The script uses `grayscale=True` and 80% confidence for image matching
+- Building and cookie detection uses **70% confidence** for reliable matching
+- Golden cookie detection uses **50% confidence** (more lenient for rare spawns)
 - Failsafe is enabled - move mouse to screen corner to emergency stop
-- Requires PNG screenshots of game elements for image recognition
-- Golden cookie detection is currently disabled but can be enabled by uncommenting relevant code
+- Script shuffles building purchase order each cycle for varied gameplay
+- Console output shows all clicks and errors for debugging
 
 ## Image Requirements
 
 The following PNG screenshots must be in the same directory as the script:
+
+**Required:**
 - `cookie.PNG` - The main cookie
 - `cursor.png` - Cursor building
 - `grandma.png` - Grandma building
@@ -78,5 +85,33 @@ The following PNG screenshots must be in the same directory as the script:
 - `shipment.png` - Shipment building
 - `alchemy.png` - Alchemy Lab building
 - `portal.png` - Portal building
-- `x_close.png` - Close button
-- `golden_cookie.png` (and variants 1-4) - Golden cookies (optional)
+- `time_machine.png` - Time Machine building
+
+**Optional (for golden cookie detection):**
+- `golden_cookie.png` - Golden cookie variant 1
+- `golden_cookie1.png` - Golden cookie variant 2
+- `golden_cookie2.png` - Golden cookie variant 3
+- `golden_cookie3.png` - Golden cookie variant 4
+- `golden_cookie4.png` - Golden cookie variant 5
+
+## Troubleshooting
+
+**Bot not finding images:**
+- Ensure game window is fully visible and not overlapped
+- Verify screenshot images are in the same directory as `gamer.py`
+- Check that image filenames match exactly (case-sensitive)
+- Adjust confidence levels in code if needed (default: 0.7 for buildings, 0.5 for golden cookies)
+
+**Bot clicking wrong locations:**
+- Take new screenshots at your current screen resolution
+- Ensure screenshots don't include browser chrome or window borders
+- Use grayscale screenshots for better matching
+
+**Performance issues:**
+- Increase `time.sleep()` value at end of loop (currently 0.5 seconds)
+- Reduce number of clicks per cycle (currently 140)
+- Close other applications to free up system resources
+
+## License
+
+For educational and personal use only. Cookie Clicker game is owned by Orteil and Opti
