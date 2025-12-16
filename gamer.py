@@ -5,75 +5,62 @@ import random
 
 pyautogui.FAILSAFE = True
 
-pyautogui.useImageNotFoundException(False)
+# Optional: suppress image-not-found exceptions if supported
+try:
+    pyautogui.useImageNotFoundException(False)
+except pyautogui.PyAutoGUIException as e:
+    print("Warning: useImageNotFoundException not available:", e)
 
+print("Starting in 6 seconds. Press ESC to stop.")
 pyautogui.countdown(6)
 
+# Define images
+stores = ['cursor.png', 'grandma.png', 'farm.png', 'mine.png', 'factory.png',
+             'bank.png', 'temple.png', 'tower.png', 'shipment.png',
+             'alchemy.png', 'portal.png', 'time_machine.png']
+
+goldens = ['golden_cookie.png', 'golden_cookie1.png',
+           'golden_cookie2.png', 'golden_cookie3.png', 'golden_cookie4.png']
+
+# Define main functions
+def find_image(images, confidence=0.5):
+    for image in images:
+        matches = pyautogui.locateAllOnScreen(image, confidence=confidence)
+        if matches:
+            for match in matches:
+                center = pyautogui.center(match)
+                return center
+    return None
+
+def click_cookie(cookie):
+    if cookie:
+        pyautogui.moveTo(cookie)
+        pyautogui.click(cookie, clicks=140, interval=0.075)
+        print(f"Clicked cookie at {cookie}")
 
 while not keyboard.is_pressed('esc'):
-
-    cookie = pyautogui.locateOnScreen(
-        'cookie.PNG', grayscale=True, confidence=.80)
-    cursor = pyautogui.locateOnScreen(
-        'cursor.png', grayscale=True, confidence=.80)
-    farm = pyautogui.locateOnScreen(
-        'farm.png', grayscale=True, confidence=.80)
-    grandma = pyautogui.locateOnScreen(
-        'grandma.png', grayscale=True, confidence=.80)
-    mine = pyautogui.locateOnScreen(
-        'mine.png', grayscale=True, confidence=.80)
-    factory = pyautogui.locateOnScreen(
-        'factory.png', grayscale=True, confidence=.80)
-    bank = pyautogui.locateOnScreen(
-        'bank.png', grayscale=True, confidence=.80)
-    x_close = pyautogui.locateOnScreen(
-        'x_close.png', grayscale=True, confidence=.80)
-    temple = pyautogui.locateOnScreen(
-        'temple.png', grayscale=True, confidence=.80)
-    tower = pyautogui.locateOnScreen(
-        'tower.png', grayscale=True, confidence=.80)
-    shipment = pyautogui.locateOnScreen(
-        'shipment.png', grayscale=True, confidence=.80)
-    alchemy = pyautogui.locateOnScreen(
-        'alchemy.png', grayscale=True, confidence=.80)
-    portal = pyautogui.locateOnScreen(
-        'portal.png', grayscale=True, confidence=.80)
-    time_machine = pyautogui.locateOnScreen(
-        'time_machine.png', grayscale=True, confidence=.80)
-    goldens = ['golden_cookie.png', 'golden_cookie1.png',
-               'golden_cookie2.png', 'golden_cookie3.png', 'golden_cookie4.png']
-
-    pics = [cookie, bank, grandma, mine, farm,
-            factory, cursor, tower, x_close, temple, shipment, alchemy, portal, time_machine]
-
-    # if pyautogui.locateOnScreen('cookie.PNG', grayscale=True, confidence=.80) != None:
     try:
+        cookie = pyautogui.locateCenterOnScreen('cookie.PNG', grayscale=True, confidence=0.7)
 
-        def tile_click():
-            image = random.choice(pics)
-            pyautogui.moveTo(image)
-            pyautogui.click(image)
-            print(f"I clicked on " f"{image}")
-            # time.sleep(.25)
+        # Click random building if available
+        random.shuffle(stores)
+        for store in stores:
+            location = pyautogui.locateCenterOnScreen(store, grayscale=True, confidence=0.7)
+            if location:
+                pyautogui.moveTo(location)
+                pyautogui.click(location)
+                print(f"Clicked store item: {store} at {location}")
+                break
 
-            pyautogui.moveTo(cookie)
-            pyautogui.click(cookie, clicks=140, interval=.075)
-            print(f"I clicked the cookie " f"{cookie}")
+        # Click golden cookie if found
+        golden_found = find_image(goldens, confidence=0.5)
+        if golden_found:
+            pyautogui.moveTo(golden_found)
+            pyautogui.click(golden_found)
+            print(f"Clicked golden cookie at {golden_found}")
+        else:
+            click_cookie(cookie)
 
-            # time.sleep(.25)
-            # for golden in goldens:
-            #     if pyautogui.locateOnScreen(golden, grayscale=True, confidence=.80):
-            #         pyautogui.moveTo(golden)
-            #         pyautogui.click(golden)
-            #         print(f"I found the golden cookie {golden}")
-            #     else:
-            #         pyautogui.locateOnScreen(
-            #             cookie, grayscale=True, confidence=.85)
-            #         pyautogui.moveTo(cookie)
-            #         pyautogui.click(cookie, clicks=140, interval=.075)
-            #         # tsleep(.25)me.sleep(.25)
-            #         print('Cookies are the Solution!')
-        tile_click()
-    except:
-        print('I cannot find you!')
-        time.sleep(.75 - (time.time() % .75))
+    except Exception as e:
+        print(f"Error: {e}")
+    time.sleep(0.5)
