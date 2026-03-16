@@ -1,117 +1,90 @@
 # Cookie Clicker Automation Bot
 
-A Python automation script that plays Cookie Clicker by automatically clicking the cookie and purchasing buildings/upgrades.
-
-## Overview
-
-This bot uses image recognition to identify and interact with Cookie Clicker game elements on screen. It continuously clicks the cookie and purchases available buildings to maximize cookie production.
+A Python automation script that plays Cookie Clicker by automatically clicking the cookie, purchasing the most expensive affordable building, and clicking golden cookies.
 
 ## Features
 
 - **Automated Cookie Clicking**: Rapidly clicks the main cookie (140 clicks per cycle)
-- **Smart Building Purchases**: Automatically detects and purchases available buildings including:
-  - Cursor
-  - Grandma
-  - Farm
-  - Mine
-  - Factory
-  - Bank
-  - Temple
-  - Wizard Tower
-  - Shipment
-  - Alchemy Lab
-  - Portal
-  - Time Machine
-- **Golden Cookie Detection**: Actively detects and clicks golden cookies with 50% confidence threshold
+- **Smart Building Purchases**: Color-scans the store panel for green (affordable) price text and buys the most expensive item you can afford — no reference images needed
+- **Golden Cookie Detection**: Background thread scans every second using HSV color detection and clicks golden cookies immediately
+- **Debug Screenshots**: Saves annotated screenshots of store purchases (`store_debug/`) and golden cookie clicks (`golden_debug/`) for review — last 10 kept
 - **Safe Exit**: Press ESC to stop the bot at any time
-- **Error Handling**: Gracefully handles missing images and unexpected errors
 
 ## Requirements
 
 - Python 3.x
-- `pyautogui` - For screen automation
-- `keyboard` - For hotkey detection
-- Screenshot images of game elements (cookie.PNG, cursor.png, farm.png, etc.)
+- `pyautogui`
+- `keyboard`
+- `opencv-python`
+- `numpy`
+- `Pillow`
+- `cookie.PNG` — screenshot of the main cookie (only image required)
 
 ## Installation
 
 ```bash
-pip install pyautogui keyboard
+pip install pyautogui keyboard opencv-python numpy Pillow
 ```
 
 ## Usage
 
-1. Ensure Cookie Clicker is open and visible on your screen
-2. Position the game window consistently
-3. Run the script:
+1. Open Cookie Clicker and position the game window
+2. Run the script:
    ```bash
    python gamer.py
    ```
-4. You have 6 seconds to position your cursor/window before automation begins
-5. Press ESC to stop the bot
+3. You have 6 seconds to switch to the game window before automation begins
+4. Press ESC to stop
 
 ## How It Works
 
-The script operates in a continuous loop:
-1. Scans the screen for building/upgrade images using template matching
-2. Randomly shuffles and clicks on an available building to purchase
-3. Actively searches for golden cookies and clicks them when detected
-4. If no golden cookie is found, rapidly clicks the main cookie 140 times with 0.075 second intervals
-5. Repeats until ESC is pressed
+**Main loop** (runs every 0.1s):
+1. Locates the main cookie via image match and clicks it 140 times
+2. Takes a screenshot and color-scans the store panel for green price text
+3. Buys the most expensive affordable building (last green-priced row in the store)
 
+**Background thread** (runs every 1s):
+1. Takes a full screenshot and scans for golden-hued circular blobs in HSV color space
+2. Clicks any golden cookie found immediately
 
-## Notes
+## Configuration
 
-- Building and cookie detection uses **70% confidence** for reliable matching
-- Golden cookie detection uses **50% confidence** (more lenient for rare spawns)
-- Failsafe is enabled - move mouse to screen corner to emergency stop
-- Script shuffles building purchase order each cycle for varied gameplay
-- Console output shows all clicks and errors for debugging
+All position constants are at the top of `gamer.py`:
 
-## Image Requirements
+| Constant | Description |
+|---|---|
+| `STORE_X1`, `STORE_X2` | Horizontal bounds of the store panel |
+| `STORE_Y1`, `STORE_Y2` | Vertical bounds of the store panel |
+| `STORE_X_CLICK` | X coordinate to click when buying a store item |
 
-The following PNG screenshots must be in the same directory as the script:
+Adjust these to match your screen resolution and window position.
 
-**Required:**
-- `cookie.PNG` - The main cookie
-- `cursor.png` - Cursor building
-- `grandma.png` - Grandma building
-- `farm.png` - Farm building
-- `mine.png` - Mine building
-- `factory.png` - Factory building
-- `bank.png` - Bank building
-- `temple.png` - Temple building
-- `tower.png` - Wizard Tower building
-- `shipment.png` - Shipment building
-- `alchemy.png` - Alchemy Lab building
-- `portal.png` - Portal building
-- `time_machine.png` - Time Machine building
+## Debug Folders
 
-**Optional (for golden cookie detection):**
-- `golden_cookie.png` - Golden cookie variant 1
-- `golden_cookie1.png` - Golden cookie variant 2
-- `golden_cookie2.png` - Golden cookie variant 3
-- `golden_cookie3.png` - Golden cookie variant 4
-- `golden_cookie4.png` - Golden cookie variant 5
+| Folder | Contents |
+|---|---|
+| `store_debug/` | Screenshot per purchase with a green line showing the targeted row |
+| `golden_debug/` | Screenshot per golden cookie click with a circle at the click point |
+
+Both folders keep only the last 10 images.
 
 ## Troubleshooting
 
-**Bot not finding images:**
-- Ensure game window is fully visible and not overlapped
-- Verify screenshot images are in the same directory as `gamer.py`
-- Check that image filenames match exactly (case-sensitive)
-- Adjust confidence levels in code if needed (default: 0.7 for buildings, 0.5 for golden cookies)
+**Bot not clicking the cookie:**
+- Retake `cookie.PNG` at your current resolution
+- Ensure the cookie is fully visible and unobstructed
 
-**Bot clicking wrong locations:**
-- Take new screenshots at your current screen resolution
-- Ensure screenshots don't include browser chrome or window borders
-- Use grayscale screenshots for better matching
+**Bot buying wrong store rows / buying when it can't afford:**
+- Adjust `STORE_X1`/`STORE_X2`/`STORE_Y1`/`STORE_Y2` to match your store panel
+- Review `store_debug/` screenshots to see what row is being targeted
+- Tighten the green detection thresholds in `find_best_store_item` if needed
 
-**Performance issues:**
-- Increase `time.sleep()` value at end of loop (currently 0.5 seconds)
-- Reduce number of clicks per cycle (currently 140)
-- Close other applications to free up system resources
+**Golden cookie not detected:**
+- Review `golden_debug/` screenshots to see what the detector is finding
+- Adjust the HSV range in `find_golden_cookie` if cookies are being missed or false-positives appear
+
+**Failsafe:** Move mouse to any screen corner to emergency-stop pyautogui.
 
 ## License
 
-For educational and personal use only. Cookie Clicker game is owned by Orteil and Opti
+For educational and personal use only. Cookie Clicker is owned by Orteil and Opti.

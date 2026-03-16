@@ -1,0 +1,20 @@
+# Debug output
+golden_debug/
+store_debug/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# PyAutoGUI / OpenCV temp files
+*.log
+
+# IDE
+.vscode/
+.idea/
